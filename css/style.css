@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    background-color: #ffffff;
+}
+
+.circle {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle farthest-side, #696969 30%, #ffffff 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    display : none;
+    top:100px;
+}
+#visality{
+    display : block;
+}
