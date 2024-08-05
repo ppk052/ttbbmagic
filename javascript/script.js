@@ -8,7 +8,8 @@ const circle = document.querySelector("div");
 const webSocket = new WebSocket("ws://localhost:8000");//(1)-(1) 웹소켓 열기 // 현재는 주소가 로컬호스트로 되어있다.
 webSocket.onopen = function(){           // 소켓이 열렸으면
   console.log("Web Socket Connected");   // 열렸다고 콘솔에 찍기
-  document.documentElement.requestFullscreen(); //연결됐을때 전체화면
+  document.documentElement.requestFullscreen();//연결됐을때 전체화면
+  clicked();
   webSocket.send('안녕하세요');           //(1)-(2) 서버에 메시지 보내보기
 }
 
@@ -41,7 +42,7 @@ webSocket.onmessage = function( message ){//(3) 메시지 받았으면
 
 const button = document.querySelector("button");
 button.addEventListener("click",clicked);
-function clicked(event)
+function clicked()
 {
   document.exitFullscreen();
 }
