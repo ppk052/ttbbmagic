@@ -4,13 +4,11 @@ const pattern = /\((\d+),(\d+),(\d+)\)/;//받은 메세지에서 특정값 추�
 let write = true;//그릴지여부
 const circle = document.querySelector("div");
 
-localStorage.setItem("top","0");
-localStorage.setItem("left","0"); //html에서 쓸 위치정보
-
 //웹소켓연결
 const webSocket = new WebSocket("ws://localhost:8000");//(1)-(1) 웹소켓 열기 // 현재는 주소가 로컬호스트로 되어있다.
 webSocket.onopen = function(){           // 소켓이 열렸으면
   console.log("Web Socket Connected");   // 열렸다고 콘솔에 찍기
+  document.documentElement.requestFullscreen(); //연결됐을때 전체화면
   webSocket.send('안녕하세요');           //(1)-(2) 서버에 메시지 보내보기
 }
 
@@ -41,22 +39,13 @@ webSocket.onmessage = function( message ){//(3) 메시지 받았으면
     }        
 }
 
-/*const button = document.querySelector("button");
+const button = document.querySelector("button");
 button.addEventListener("click",clicked);
 function clicked(event)
 {
-  if(write)
-  {
-    circle.id = "";
-    write = false;
-  }
-  else
-  {
-    circle.id = "visality";
-    write = true;
-  }
+  document.exitFullscreen();
 }
-*/
+
 
 
 
