@@ -2,7 +2,16 @@ LEFT_IRIS = [474, 475, 476, 477]  # 왼쪽 홍채를 구성하는 랜드마크 �
 RIGHT_IRIS = [469, 470, 471, 472]  # 오른쪽 홍채를 구성하는 랜드마크 인덱스를 정의합니다.
 NOSE = [1, 2, 98, 327] #코&코주위 랜드마크
 
-import server
+import asyncio
+from server import WebSocketServer
+
+async def main():
+    server = WebSocketServer()  # 기본 호스트와 포트로 서버 생성
+    await server.start()  # 서버 시작
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
 
 
 
