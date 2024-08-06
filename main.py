@@ -4,8 +4,7 @@ NOSE = [1, 2, 98, 327] #코&코주위 랜드마크
 
 import server
 
-server = server()
-server.send([1,350,240])
+
 
 """객체1
 객체2
