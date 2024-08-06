@@ -132,6 +132,7 @@ async def main():
     await asyncio.gather(server.wait_closed(), send_message_to_clients())
 
 # Run the server
-asyncio.run(main())
+def run_server():
+    asyncio.run(main())
 
 

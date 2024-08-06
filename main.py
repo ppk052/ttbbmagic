@@ -3,7 +3,7 @@ RIGHT_IRIS = [469, 470, 471, 472]  # 오른쪽 홍채를 구성하는 랜드마�
 NOSE = [1, 2, 98, 327] #코&코주위 랜드마크
 
 import server
-
+server.run_server()
 
 
 """객체1
