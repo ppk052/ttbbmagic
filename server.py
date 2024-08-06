@@ -167,4 +167,3 @@ class WebSocketServer:
         await asyncio.gather(server.wait_closed(), self.send_message_to_clients())
 
 
-
