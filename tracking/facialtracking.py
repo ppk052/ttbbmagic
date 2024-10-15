@@ -7,8 +7,8 @@ mp_face_mesh = mp.solutions.face_mesh  # 얼굴 메쉬(landmark) 검출을 위�
 mp_drawing = mp.solutions.drawing_utils  # MediaPipe에서 제공하는 그리기 유틸리티를 초기화합니다.
 
 # 홍채의 랜드마크 인덱스
-#LEFT_IRIS = [474, 475, 476, 477]  # 왼쪽 홍채를 구성하는 랜드마크 인덱스를 정의합니다.
-LEFT_IRIS = [1, 2, 98, 327] #코&코주위 랜드마크
+LEFT_IRIS = [474, 475, 476, 477]  # 왼쪽 홍채를 구성하는 랜드마크 인덱스를 정의합니다.
+#LEFT_IRIS = [1, 2, 98, 327] #코&코주위 랜드마크
 RIGHT_IRIS = [469, 470, 471, 472]  # 오른쪽 홍채를 구성하는 랜드마크 인덱스를 정의합니다.
 
 # 웹캠 캡처 초기화
