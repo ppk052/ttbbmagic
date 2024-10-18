@@ -22,7 +22,7 @@ def sun_tracking_from_camera():
         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
         
         # 태양의 위치에 원 그리기
-        cv2.circle(frame, maxLoc, 20, (0, 0, 255), 2)
+        cv2.circle(frame, maxLoc, 40, (0, 0, 255), 2)
         
         # 태양의 위치를 실시간으로 표시
         cv2.putText(frame, f"Sun Position: {maxLoc}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
