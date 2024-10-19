@@ -16,7 +16,9 @@ body {
     border-radius: 50%;
     cursor: pointer;
     display : none;
-    top:100px;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 #visality{
     display : block;
