@@ -65,7 +65,7 @@ def runFacialTrakcing(num):
         cv2.imshow('MediaPipe Iris', image)
         picam0.close()
         #time.sleep(0.1)       
-        if cv2.waitKey(5) & 0xFF == 27:  # Esc 키로 종료
-            break
+        #if cv2.waitKey(5) & 0xFF == 27:  # Esc 키로 종료
+            #break
 
 #cv2.destroyAllWindows()
