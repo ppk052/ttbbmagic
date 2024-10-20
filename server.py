@@ -1,6 +1,8 @@
+from picamera2 import Picamera2, Preview
 import websockets
 import asyncio
 import time
+import tracking.facialtracking as facialTrakiking
 
 class server:
     connected = False
@@ -35,9 +37,17 @@ class server:
 server1 = server([1,0,0],False)
 #server1.go()
 print("go ok")
+# Picamera2 초기화
+num=0
+
 while not server.connected:
     pass
     print(server.connected)
+
+    facialTrakiking.runFacialTrakcing(num)
+    num+=1
+    if num == 2:
+        num = 0
 for i in range(5):
     server1.send([1,i*100,250])
     time.sleep(1)
