@@ -45,7 +45,7 @@ class server:
             # Picamera2 초기화
             picam0=Picamera2(self.num)
             picam0.start()
-            print(f"{num}번째 카메라")
+            print(f"{self.num}번째 카메라")
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
                 with mp_face_mesh.FaceMesh(
