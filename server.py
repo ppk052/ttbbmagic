@@ -7,13 +7,13 @@ import eyePos3D
 import sunPos3D
 import trackingcam
 
-class server(trackingcam):
+class server(trackingcam.trackingcam):
     connected = False
     def __init__(self,message,status):
         self.message = message  
         self.status = False    
         start_server = websockets.serve(self.hello, "localhost", 8000)
-        self.tracking1 = trackingcam.trackingcam()
+        self.tracking1 = trackingcam()
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
 
