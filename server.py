@@ -10,10 +10,10 @@ import trackingcam
 class server(trackingcam.trackingcam):
     connected = False
     def __init__(self,message,status):
+        super().__init__()
         self.message = message  
         self.status = False    
         start_server = websockets.serve(self.hello, "localhost", 8000)
-        self.tracking1 = trackingcam.trackingcam()
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
 
@@ -25,16 +25,16 @@ class server(trackingcam.trackingcam):
         await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
         print(f"({self.message[0]},{self.message[1]},{self.message[2]})")
         while True:
-            self.tracking1.runTracking()
-            if self.tracking1.update:
-                if self.tracking1.bright <= 10:
-                    server1.message = [0,self.tracking1.getsunpos()[0],self.tracking1.sunpos[1]]
+            self.runTracking()
+            if self.update:
+                if self.bright <= 10:
+                    server1.message = [0,self.getsunpos()[0],self.sunpos[1]]
                 else:
-                    calculatedleft = eyePos3D.runEyePos3D(self.tracking1.eyeposcam1[0][0],self.tracking1.eyeposcam1[0][1],self.tracking1.eyeposcam2[0][0],self.tracking1.eyeposcam2[0][1])
-                    calculatedright = eyePos3D.runEyePos3D(self.tracking1.eyeposcam1[1][0],self.tracking1.eyeposcam1[1][1],self.tracking1.eyeposcam2[1][0],self.tracking1.eyeposcam2[1][1])            
-                    server1.message = [1,calculatedleft[0],calculatedleft[1]]
+                    self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.tracking1.eyeposcam2[0][0],self.tracking1.eyeposcam2[0][1])
+                    self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.tracking1.eyeposcam2[1][0],self.tracking1.eyeposcam2[1][1])            
+                    server1.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
                 server1.status = True
-                self.tracking1.confirm()
+                self.confirm()
             if self.status:
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 self.status = False
