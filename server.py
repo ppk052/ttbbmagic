@@ -5,9 +5,9 @@ import time
 #import tracking.facialtracking as facialTracking
 import eyePos3D
 import sunPos3D
-import trackingcam
+from trackingcam import trackingcam
 
-class server(trackingcam.trackingcam):
+class server(trackingcam):
     connected = False
     def __init__(self,message,status):
         super().__init__()
