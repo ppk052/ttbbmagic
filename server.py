@@ -45,6 +45,9 @@ class server:
             # Picamera2 초기화
             picam0=Picamera2(self.num)
             picam0.start()
+            # Picamera2에서 이미지를 캡처
+            image = picam0.capture_array()  
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
             print(f"{self.num}번째 카메라")
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
@@ -53,10 +56,6 @@ class server:
                     refine_landmarks=True,
                     min_detection_confidence=0.5,
                     min_tracking_confidence=0.5) as face_mesh:
-                    
-                    # Picamera2에서 이미지를 캡처
-                    image = picam0.capture_array()  
-                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     
                     # MediaPipe Face Mesh 처리
                     #results는 눈 잡았는지 확인하는 boolean
