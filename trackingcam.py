@@ -13,6 +13,10 @@ class trackingcam:
         self.num = 0
         self.update = False
         self.bright = 0;
+        self.message = message  
+        self.status = False    
+        self.calculatedleft = [0,0,0]
+        self.calculatedright = [0,0,0]   
         
     def runTrakcing(self):
         # Mediapipe 솔루션 초기화
