@@ -88,9 +88,11 @@ class server:
                             cv2.putText(image, right_iris_text, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2, cv2.LINE_AA)
                             if self.num==0:
                                 self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
+                                self.num=1
                             else:
                                 self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                            self.num += 1
+                                self.num=0
+                            #self.num += 1
             if self.num==2:
                 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
                 # 태양의 위치에 원 그리기
