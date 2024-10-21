@@ -4,6 +4,8 @@ import asyncio
 import time
 import tracking.facialtracking as facialTracking
 import tracking.tracking as tracking
+import eyePos3D
+import sunPos3D
 
 class server:
     connected = False
@@ -35,18 +37,23 @@ class server:
     #async def go(self):
         
 
-server1 = server([1,0,0],False)
+server1 = server([0,0,0],False)
 #server1.go()
 print("go ok")
-tracking1 = tracking()
+tracking1 = tracking.tracking()
 while not server.connected:
     pass
     print(server.connected)
 
-tracking1.runTracking()
 while True:
+    tracking1.runTracking()
     if tracking1.update:
-        server1.message = f"(1, {tracking1.getsunpos()[0]},{tracking1.sunpos[1]})"
+        if tracking1.bright <= 10:
+            server1.message = [0,tracking1.getsunpos()[0],tracking1.sunpos[1]]
+        else:
+            calculatedleft = eyePos3D.runEyePos3D(tracking1.eyeposcam1[0][0],tracking1.eyeposcam1[0][1],tracking1.eyeposcam2[0][0],tracking1.eyeposcam2[0][1])
+            calculatedright = eyePos3D.runEyePos3D(tracking1.eyeposcam1[1][0],tracking1.eyeposcam1[1][1],tracking1.eyeposcam2[1][0],tracking1.eyeposcam2[1][1])            
+            server1.message = [1,calculatedleft[0],calculatedleft[1]]
         server1.status = True
         tracking1.confirm()
     """

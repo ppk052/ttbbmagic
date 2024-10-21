@@ -6,11 +6,13 @@ import time
 
 class tracking:
     def __init__(self):
+        # 왼쪽 오른쪽 순서
         self.eyeposcam1 = [[0,0],[0,0]]
         self.eyeposcam2 = [[0,0],[0,0]]
         self.sunpos = [0,0]
         self.num = 0
         self.update = False
+        self.bright = 0;
         
     def runTrakcing(self):
         # Mediapipe 솔루션 초기화
@@ -32,6 +34,7 @@ class tracking:
                 image = picam0.capture_array()  # Picamera2에서 이미지를 캡처
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                 # MediaPipe Face Mesh 처리
+                #results는 눈 잡았는지 확인하는 boolean
                 results = face_mesh.process(image)
                 if results.multi_face_landmarks:
                     for face_landmarks in results.multi_face_landmarks:
@@ -76,6 +79,7 @@ class tracking:
             self.sunpos=[maxLoc[0],maxLoc[1]]
             # 태양의 위치를 실시간으로 표시
             cv2.putText(image, f"Sun Position: {maxLoc}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            self.bright = np.mean(image)
             self.num = 0
             self.update = True
         cv2.imshow('MediaPipe Iris', image)

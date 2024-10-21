@@ -1,13 +1,14 @@
 import math
 
-def runEyePos3D():
+def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
+    
     b, a, e, d = 1,1,1,1 #나중에 바꿀곳
     l = 0.2 #나중에 바꿀곳
 
-    #theta = b/l
-    #pi = e/l
-    theta = math.pi / 4
-    pi = math.pi / 4
+    theta = b/l
+    pi = e/l
+    #theta = math.pi / 4
+    #pi = math.pi / 4
 
     M = 1
 
