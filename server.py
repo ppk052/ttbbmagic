@@ -16,7 +16,7 @@ class server:
         self.sunpos = [0,0]
         self.num = 0
         self.update = False
-        self.bright = 20;
+        self.bright = 0;
         self.message = message  
         self.status = False    
         self.calculatedleft = [0,0,0]
@@ -94,8 +94,8 @@ class server:
             #태양위치추출
             if self.num==2:
                 self.bright = np.mean(image)
-                #평균밝기가 일정 수치 이상일때 실행
-                if self.bright >= 10:
+                #평균밝기가 일정 수치 이하일때 실행
+                if self.bright <= 10:
                     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
                     # 태양의 위치에 원 그리기
                     #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
