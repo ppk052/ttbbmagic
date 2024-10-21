@@ -101,7 +101,9 @@ class server:
                         (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
                         self.sunpos=[maxLoc[0],maxLoc[1]]
                         self.update = True
-                    except:
+                    except Exception as e:
+                        print(e)
+                        print("다음카메라로 넘어갑니다")
                         pass
                     # 태양의 위치에 원 그리기
                     #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
