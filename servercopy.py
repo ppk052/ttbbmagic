@@ -94,6 +94,7 @@ class server:
                                 self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                                 self.num=0
                                 print(self.eyeposcam2)
+                                self.update = True
                             #self.num += 1
             if self.num==2:
                 (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
@@ -116,6 +117,7 @@ class server:
                     self.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
+                self.update = False
             time.sleep(5)
             #print("("+str(self.message[0])+","+str(self.message[1])+","+str(self.message[2]),")")
     """async def sendcor(self,websocket, traking ,update):
