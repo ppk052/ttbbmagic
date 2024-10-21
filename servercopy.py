@@ -16,7 +16,7 @@ class server:
         self.sunpos = [0,0]
         self.num = 0
         self.update = False
-        self.bright = 0;
+        self.bright = 20;
         self.message = message  
         self.status = False    
         self.calculatedleft = [0,0,0]
@@ -90,6 +90,7 @@ class server:
                                 self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                                 print(self.eyeposcam1)
                                 self.num=1
+                                self.update = True
                             else:
                                 self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                                 self.num=0
