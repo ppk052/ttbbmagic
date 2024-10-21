@@ -106,7 +106,6 @@ class server:
                 self.num = 0
                 self.update = True
             cv2.imshow('MediaPipe Iris', image)
-            time.sleep(0.5)
             picam0.close()
             if self.update:
                 if self.bright <= 10:
@@ -120,6 +119,7 @@ class server:
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 self.status = False
                 print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
+            time.sleep(2)
             #print("("+str(self.message[0])+","+str(self.message[1])+","+str(self.message[2]),")")
     """async def sendcor(self,websocket, traking ,update):
         while True:
