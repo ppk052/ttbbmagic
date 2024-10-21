@@ -13,7 +13,7 @@ class server(trackingcam):
         self.message = message  
         self.status = False    
         start_server = websockets.serve(self.hello, "localhost", 8000)
-        self.tracking1 = trackingcam()
+        self.tracking1 = trackingcam.trackingcam()
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
 
