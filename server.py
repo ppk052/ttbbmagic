@@ -94,6 +94,7 @@ class server:
             #태양위치추출
             if self.num==2:
                 self.bright = np.mean(image)
+                print(self.bright)
                 #평균밝기가 일정 수치 이하일때 실행
                 if self.bright <= 10:
                     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
