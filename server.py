@@ -5,15 +5,15 @@ import time
 #import tracking.facialtracking as facialTracking
 import eyePos3D
 import sunPos3D
-import tracking.trackingcam
+import trackingcam
 
-class server(tracking.trackingcam):
+class server(trackingcam):
     connected = False
     def __init__(self,message,status):
         self.message = message  
         self.status = False    
         start_server = websockets.serve(self.hello, "localhost", 8000)
-        self.tracking1 = tracking()
+        self.tracking1 = trackingcam()
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
 
