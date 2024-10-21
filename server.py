@@ -7,6 +7,7 @@ import sunPos3D
 import mediapipe as mp
 import numpy as np
 import cv2
+import os
 
 class server:
     connected = False
@@ -28,6 +29,7 @@ class server:
         asyncio.get_event_loop().run_forever() 
 
     async def hello(self,websocket, path):
+        os.system("chromium-browser --kiosk /home/pi/ttbbmagic/index.html")
         name = await websocket.recv()
         print("connected")
         server.connected = True
