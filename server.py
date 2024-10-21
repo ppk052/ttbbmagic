@@ -104,6 +104,7 @@ class server:
                     self.update = True
                     self.num=0
             picam0.close()
+            time.sleep(1)
             if self.update:
                 #여기에 알고리즘계산하기
                 self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
