@@ -102,16 +102,16 @@ class server:
                 self.num = 0
                 self.update = True
             cv2.imshow('MediaPipe Iris', image)
+            time.sleep(0.5)
             picam0.close()
             if self.update:
                 if self.bright <= 10:
-                    server1.message = [0,self.sunpos[0],self.sunpos[1]]
+                    self.message = [0,self.sunpos[0],self.sunpos[1]]
                 else:
                     self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                     self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])            
-                    server1.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
-                server1.status = True
-                self.confirm()
+                    self.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
+                self.status = True
             if self.status:
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 self.status = False
