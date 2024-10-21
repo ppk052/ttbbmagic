@@ -13,6 +13,8 @@ class server(trackingcam.trackingcam):
         super().__init__()
         self.message = message  
         self.status = False    
+        self.calculatedleft = [0,0,0]
+        self.calculatedright = [0,0,0]
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -25,16 +27,16 @@ class server(trackingcam.trackingcam):
         await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
         print(f"({self.message[0]},{self.message[1]},{self.message[2]})")
         while True:
-            self.runTracking()
+            super.runTracking()
             if self.update:
-                if self.bright <= 10:
-                    server1.message = [0,self.getsunpos()[0],self.sunpos[1]]
+                if super.bright <= 10:
+                    server1.message = [0,super.getsunpos()[0],super.sunpos[1]]
                 else:
-                    self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.tracking1.eyeposcam2[0][0],self.tracking1.eyeposcam2[0][1])
-                    self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.tracking1.eyeposcam2[1][0],self.tracking1.eyeposcam2[1][1])            
+                    self.calculatedleft = eyePos3D.runEyePos3D(super.eyeposcam1[0][0],super.eyeposcam1[0][1],super.eyeposcam2[0][0],super.eyeposcam2[0][1])
+                    self.calculatedright = eyePos3D.runEyePos3D(super.eyeposcam1[1][0],super.eyeposcam1[1][1],super.eyeposcam2[1][0],super.eyeposcam2[1][1])            
                     server1.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
                 server1.status = True
-                self.confirm()
+                super.confirm()
             if self.status:
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 self.status = False
