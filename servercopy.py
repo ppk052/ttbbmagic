@@ -114,12 +114,9 @@ class server:
                     self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                     self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])            
                     self.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
-                self.status = True
-            if self.status:
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
-                self.status = False
                 print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
-            time.sleep(2)
+            time.sleep(5)
             #print("("+str(self.message[0])+","+str(self.message[1])+","+str(self.message[2]),")")
     """async def sendcor(self,websocket, traking ,update):
         while True:
