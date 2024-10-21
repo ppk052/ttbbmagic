@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import time
 
-class tracking:
+class trackingcam:
     def __init__(self):
         # 왼쪽 오른쪽 순서
         self.eyeposcam1 = [[0,0],[0,0]]
