@@ -1,8 +1,9 @@
-from picamera2 import Picamera2, Preview
+"""from picamera2 import Picamera2, Preview"""
 import websockets
 import asyncio
 import time
-import tracking.facialtracking as facialTrakiking
+import tracking.facialtracking as facialTracking
+import tracking.tracking as tracking
 
 class server:
     connected = False
@@ -12,10 +13,6 @@ class server:
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
-        
-    def send(self,cor):
-        self.message= cor
-        self.status
 
     async def hello(self,websocket, path):
         name = await websocket.recv()
@@ -30,6 +27,10 @@ class server:
                 self.status = False
                 print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
             #print("("+str(self.message[0])+","+str(self.message[1])+","+str(self.message[2]),")")
+    async def sendcor(self,websocket, traking ,update):
+        while True:
+            if update:
+                await websocket.send(f"()")
 
     #async def go(self):
         
@@ -37,18 +38,19 @@ class server:
 server1 = server([1,0,0],False)
 #server1.go()
 print("go ok")
-# Picamera2 초기화
-num=0
-
+tracking1 = tracking()
 while not server.connected:
     pass
     print(server.connected)
 
-    facialTrakiking.runFacialTrakcing(num)
+tracking1.runTracking()
+while True:
+    if tracking1.update:
+        server1.message = f"(1, {tracking1.getsunpos()[0]},{tracking1.sunpos[1]})"
+        server1.status = True
+        tracking1.confirm()
+    """
+    facialTracking.runFacialTrakcing(num)
     num+=1
     if num == 2:
-        num = 0
-for i in range(5):
-    server1.send([1,i*100,250])
-    time.sleep(1)
-    print(i)
+        num = 0"""
