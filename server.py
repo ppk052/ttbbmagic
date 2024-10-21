@@ -27,16 +27,16 @@ class server(trackingcam):
         await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
         print(f"({self.message[0]},{self.message[1]},{self.message[2]})")
         while True:
-            super().runTracking()
-            if super().update:
-                if super().bright <= 10:
-                    server1.message = [0,super().getsunpos()[0],super().sunpos[1]]
+            self.runTracking()
+            if self.update:
+                if self.bright <= 10:
+                    server1.message = [0,self.getsunpos()[0],self.sunpos[1]]
                 else:
-                    self.calculatedleft = eyePos3D.runEyePos3D(super().eyeposcam1[0][0],super().eyeposcam1[0][1],super().eyeposcam2[0][0],super().eyeposcam2[0][1])
-                    self.calculatedright = eyePos3D.runEyePos3D(super().eyeposcam1[1][0],super().eyeposcam1[1][1],super().eyeposcam2[1][0],super().eyeposcam2[1][1])            
+                    self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
+                    self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])            
                     server1.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
                 server1.status = True
-                super().confirm()
+                self.confirm()
             if self.status:
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 self.status = False
