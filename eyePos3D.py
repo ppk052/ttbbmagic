@@ -9,7 +9,7 @@ def changeY(k):
 def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
     A, B, C, D = changeX(cam0x),changeY(cam0y),changeX(cam1x),changeY(cam1y) 
 
-    M = 100
+    M = 200
 
     ac = A+C
     if ac == 0:
