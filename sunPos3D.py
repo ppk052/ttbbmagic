@@ -1,8 +1,8 @@
 import math
 
 def runSunPos3D(alpha, beta):
-    a = 4608 / 2
-    b = 2592 / 2
+    a = 640 / 2
+    b = 480 / 2
 
     theta0 = math.pi / 180 * 51
     pi0 = math.pi / 180 * (67/2)
