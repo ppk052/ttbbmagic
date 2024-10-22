@@ -2,9 +2,8 @@ import math
 
 #eyeleft,eyeright,sun은 길이3의 배열
 def caldisplay(eyeleft,eyeright,sun):
-    #눈중점좌표
+    #눈중점좌표 계산
     eyeforcal = [0,0,0]
-    #눈 중점좌표 계산
     for i in range(3):
         eyeforcal[i]=(eyeleft[i]+eyeright[i])/2
     #디스플레이 3차원좌표
