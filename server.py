@@ -83,7 +83,7 @@ class server:
                                 left_iris_points.append((x, y))
                             left_iris_points = np.array(left_iris_points, dtype=np.int32)
                             (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
-                            left_center = (int(lx) * -1, int(ly))
+                            left_center = (int(lx) * -1, int(ly) * -1)
                             left_radius = int(left_radius)
                             
                             # 오른쪽 홍채
@@ -94,7 +94,7 @@ class server:
                                 right_iris_points.append((x, y))
                             right_iris_points = np.array(right_iris_points, dtype=np.int32)
                             (rx, ry), right_radius = cv2.minEnclosingCircle(right_iris_points)
-                            right_center = (int(rx) * -1, int(ry))
+                            right_center = (int(rx) * -1, int(ry) * -1)
                             right_radius = int(right_radius)
                             if self.num==0:
                                 self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
