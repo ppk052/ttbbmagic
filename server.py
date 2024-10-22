@@ -105,11 +105,12 @@ class server:
             #태양위치추출
             if self.num==2:
                 self.bright = np.mean(image)
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 print(self.bright)
                 #평균밝기가 일정 수치 이하일때 실행
                 self.update = True
                 try:
-                    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
+                    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
                     self.sunpos=[maxLoc[0],maxLoc[1]]
                 except Exception as e:
                     print(e)
