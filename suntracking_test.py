@@ -29,7 +29,7 @@ def sun_tracking_from_camera():
         sp3d = sunPos3D.runSunPos3D(sunpos[0], sunpos[1])
         # 태양의 위치를 실시간으로 표시
         cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-        cv2.putText(frame, f"Sun Position: {sp3d}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+        cv2.putText(frame, f"cal: {[sp3d[1],sp3d[2]]}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
         # 결과 영상 출력
         cv2.imshow("Sun Tracking (Press 'q' to quit)", frame)
