@@ -102,7 +102,7 @@ class server:
                                 self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                             self.num += 1
             #태양위치추출
-            if self.num==2:
+            elif self.num==2:
                 self.bright = np.mean(image)
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 print(self.bright)
@@ -128,7 +128,7 @@ class server:
                 self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                 self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
                 self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
-                self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
+                self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun, image.shape[1],image.shape[0])
                 self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
                 if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
                     await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")

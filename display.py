@@ -1,7 +1,7 @@
 import math
 
 #eyeleft,eyeright,sun은 길이3의 배열
-def caldisplay(eyeleft,eyeright,sun):
+def caldisplay(eyeleft,eyeright,sun, max_x, max_y):
     #눈중점좌표 계산
     eyeforcal = [0,0,0]
     for i in range(3):
@@ -10,8 +10,6 @@ def caldisplay(eyeleft,eyeright,sun):
     display3D= [0,0,0]
     #최종 디스플레이 퍼센트 = result, max_x는 디스플레이 계산식의 A, max_y는 디스플레이 계산식의 B 나머지는 동일
     result = [0,0]
-    max_x = 500
-    max_y = 500 
     #e = sun[0]
     #f = sun[1]
     #g = sun[2]
