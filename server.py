@@ -60,6 +60,7 @@ class server:
             image = picam0.capture_array()  
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
             print(f"{self.num}번째 카메라")
+            print(image.shape)
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
                 with mp_face_mesh.FaceMesh(
@@ -129,7 +130,8 @@ class server:
                 self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
                 self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
                 self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
-                await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
-                print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
+                if  (0 <= self.message[0] and self.message[0] <= 100) and (0 <= self.message[1] and self.message[1] <= 100):
+                    await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
+                    print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
                 self.update = False
 server1 =server([0,0,0],False)
