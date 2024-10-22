@@ -129,7 +129,7 @@ class server:
                 self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
                 self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
                 self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
-                self.message = [1,self.calculateddp[0],self.calculateddp[1]]
+                self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
                 self.update = False
