@@ -9,5 +9,8 @@ def runSunPos3D(alpha, beta):
 
     theta1 = math.atan(alpha * math.tan(theta0) / a)
     pi1 = math.atan(beta * math.tan(pi0) / b)
-
+    resultx = -a/math.tan(theta0)
+    resulty = a*math.tan(theta1)/math.tan(theta0)
+    resultz = b*math.tan(pi1)/math.tan(pi0)
     print("<", -a/math.tan(theta0),",", a*math.tan(theta1)/math.tan(theta0), ",", b*math.tan(pi1)/math.tan(pi0), ">")
+    return [resultx,resulty,resultz]

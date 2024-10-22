@@ -4,6 +4,7 @@ import asyncio
 import time
 import eyePos3D
 import sunPos3D
+import display
 import mediapipe as mp
 import numpy as np
 import cv2
@@ -22,6 +23,8 @@ class server:
         self.status = False    
         self.calculatedleft = [0,0,0]
         self.calculatedright = [0,0,0]
+        self.calculatedsun=[0,0,0]
+        self.calculateddp=[0,0]
         self.message = message  
         self.status = False  
         start_server = websockets.serve(self.hello, "localhost", 8000)
@@ -115,7 +118,9 @@ class server:
                 #여기에 알고리즘계산하기
                 self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                 self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
-                self.message = [1,self.calculatedleft[0],self.calculatedleft[1]]
+                self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
+                self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
+                self.message = [1,self.calculateddp[0],self.calculateddp[1]]
                 await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
                 print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
                 self.update = False
