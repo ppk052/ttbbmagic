@@ -77,8 +77,8 @@ class server:
                             # 왼쪽 홍채
                             left_iris_points = []
                             for idx in LEFT_IRIS:
-                                x = int(face_landmarks.landmark[idx].x * image.shape[1])
-                                y = int(face_landmarks.landmark[idx].y * image.shape[0])
+                                x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
+                                y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
                                 left_iris_points.append((x, y))
                             left_iris_points = np.array(left_iris_points, dtype=np.int32)
                             (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
@@ -109,7 +109,7 @@ class server:
                 self.update = True
                 try:
                     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-                    self.sunpos=[maxLoc[0],maxLoc[1]]
+                    self.sunpos=[maxLoc[0]- (image.shape[1] / 2), maxLoc[1]- (image.shape[0] / 2)]
                 except Exception as e:
                     print(e)
                     print("다음카메라로 넘어갑니다")
