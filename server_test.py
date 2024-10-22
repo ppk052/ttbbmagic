@@ -57,13 +57,15 @@ class server:
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
             
-            time.sleep(0.2)
             print(f"{self.num}번째 카메라")
             print(image.shape)
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
                 cnt = 0
                 no_cnt = 0
+                #눈위치 초기화
+                if self.num == 0: self.eyeposcam1 = [[0,0],[0,0]]
+                elif self.num == 1: self.eyeposcam2 = [[0,0],[0,0]]
                 with mp_face_mesh.FaceMesh(
                     max_num_faces=1,
                     refine_landmarks=True,
