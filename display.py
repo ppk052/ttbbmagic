@@ -12,9 +12,10 @@ def caldisplay(eyeleft,eyeright,sun):
     result = [0,0]
     max_x = 500
     max_y = 200 
-    e = sun[0]
-    f = sun[1]
-    g = sun[2]
+    #e = sun[0]
+    #f = sun[1]
+    #g = sun[2]
+    e,f,g = 3,0,3**(1/2)
     a = eyeforcal[0]
     b = eyeforcal[1]
     c = eyeforcal[2]
