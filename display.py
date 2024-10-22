@@ -11,7 +11,7 @@ def caldisplay(eyeleft,eyeright,sun):
     #최종 디스플레이 퍼센트 = result, max_x는 디스플레이 계산식의 A, max_y는 디스플레이 계산식의 B 나머지는 동일
     result = [0,0]
     max_x = 500
-    max_y = 200 
+    max_y = 500 
     #e = sun[0]
     #f = sun[1]
     #g = sun[2]
