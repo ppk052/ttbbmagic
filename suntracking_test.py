@@ -4,7 +4,7 @@ from picamera2 import Picamera2, Preview
 
 # 실시간 태양 추적 함수
 def sun_tracking_from_camera():
-    picam2 = Picamera2()  # Picamera2 객체 생성
+    picam2 = Picamera2(2)  # Picamera2 객체 생성
     config = picam2.create_preview_configuration(main={"size": (640, 480)})  # 미리보기 설정
     picam2.configure(config)
     picam2.start()  # 카메라 미리보기 시작
@@ -26,7 +26,7 @@ def sun_tracking_from_camera():
         cv2.circle(frame, maxLoc, 20, (0, 0, 255), 2)
         
         # 태양의 위치를 실시간으로 표시
-        cv2.putText(frame, f"Sun Position: {maxLoc}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+        cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
         
         # 결과 영상 출력
         cv2.imshow("Sun Tracking (Press 'q' to quit)", frame)
