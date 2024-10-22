@@ -22,4 +22,4 @@ def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
     print("x:", x)
     print("y:", y)
     print("z:", z)
-    return([x,y,x])
+    return([x,y,z])
