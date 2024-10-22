@@ -117,6 +117,7 @@ class server:
                                         self.eyeposcam2[1][i] += right_center[i]
                         else:
                             no_cnt+=1
+                    print("===debug3===")
                 ##end of while
                 max_num = 50
                 if no_cnt == cnt:
@@ -133,6 +134,7 @@ class server:
                     for i in range(2):
                         self.eyeposcam2[1][i] /= (max_num - no_cnt) 
                 self.num+=1
+                print("===debug4===")
             #태양위치추출
             elif self.num==2:
                 cnt = 0
