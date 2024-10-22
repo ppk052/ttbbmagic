@@ -57,53 +57,81 @@ class server:
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
             
-            # Picamera2에서 이미지를 캡처
-            image = picam0.capture_array()  
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
             time.sleep(0.2)
             print(f"{self.num}번째 카메라")
             print(image.shape)
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
+                cnt = 0
+                no_cnt = 0
                 with mp_face_mesh.FaceMesh(
                     max_num_faces=1,
                     refine_landmarks=True,
                     min_detection_confidence=0.5,
                     min_tracking_confidence=0.5) as face_mesh:
                     
-                    # MediaPipe Face Mesh 처리
-                    #results는 눈 잡았는지 확인하는 boolean
-                    results = face_mesh.process(image)
-                    time.sleep(0.2)
-                    if results.multi_face_landmarks:
-                        for face_landmarks in results.multi_face_landmarks:
-                            
-                            # 왼쪽 홍채
-                            left_iris_points = []
-                            for idx in LEFT_IRIS:
-                                x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
-                                y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
-                                left_iris_points.append((x, y))
-                            left_iris_points = np.array(left_iris_points, dtype=np.int32)
-                            (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
-                            left_center = (int(lx) * -1, int(ly) * -1)
-                            left_radius = int(left_radius)
-                            
-                            # 오른쪽 홍채
-                            right_iris_points = []
-                            for idx in RIGHT_IRIS:
-                                x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
-                                y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
-                                right_iris_points.append((x, y))
-                            right_iris_points = np.array(right_iris_points, dtype=np.int32)
-                            (rx, ry), right_radius = cv2.minEnclosingCircle(right_iris_points)
-                            right_center = (int(rx) * -1, int(ry) * -1)
-                            right_radius = int(right_radius)
-                            if self.num==0:
-                                self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                            else:
-                                self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                            self.num += 1
+                    while cnt <= 50: 
+                        # Picamera2에서 이미지를 캡처
+                        image = picam0.capture_array()  
+                        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+                        # MediaPipe Face Mesh 처리
+                        #results는 눈 잡았는지 확인하는 boolean
+                        results = face_mesh.process(image)
+                        if results.multi_face_landmarks:
+                            cnt+=1
+                            for face_landmarks in results.multi_face_landmarks:
+                                
+                                # 왼쪽 홍채
+                                left_iris_points = []
+                                for idx in LEFT_IRIS:
+                                    x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
+                                    y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
+                                    left_iris_points.append((x, y))
+                                left_iris_points = np.array(left_iris_points, dtype=np.int32)
+                                (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
+                                left_center = (int(lx) * -1, int(ly) * -1)
+                                left_radius = int(left_radius)
+                                
+                                # 오른쪽 홍채
+                                right_iris_points = []
+                                for idx in RIGHT_IRIS:
+                                    x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
+                                    y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
+                                    right_iris_points.append((x, y))
+                                right_iris_points = np.array(right_iris_points, dtype=np.int32)
+                                (rx, ry), right_radius = cv2.minEnclosingCircle(right_iris_points)
+                                right_center = (int(rx) * -1, int(ry) * -1)
+                                right_radius = int(right_radius)
+                                if self.num==0:
+                                    self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
+                                    for i in range(2):
+                                        self.eyeposcam1[0][i] += left_center[i]
+                                    for i in range(2):
+                                        self.eyeposcam1[1][i] += left_center[i]
+                                else:
+                                    self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
+                                    for i in range(2):
+                                        self.eyeposcam2[0][i] += left_center[i]
+                                    for i in range(2):
+                                        self.eyeposcam2[1][i] += left_center[i]
+                        else:
+                            no_cnt+=1
+                    ##end of while
+                    max_num = 50
+                    if no_cnt == cnt:
+                        self.num = 0
+                        continue
+                    elif self.num == 0:
+                        for i in range(2):
+                            self.eyeposcam1[0][i] /= (max_num - no_cnt) 
+                        for i in range(2):
+                            self.eyeposcam1[1][i] /= (max_num - no_cnt) 
+                    else:
+                        for i in range(2):
+                            self.eyeposcam2[0][i] /= (max_num - no_cnt) 
+                        for i in range(2):
+                            self.eyeposcam2[1][i] /= (max_num - no_cnt) 
+                    num+=1
                 picam0.close()
             #태양위치추출
             elif self.num==2:
