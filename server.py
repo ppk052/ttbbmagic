@@ -89,8 +89,8 @@ class server:
                             # 오른쪽 홍채
                             right_iris_points = []
                             for idx in RIGHT_IRIS:
-                                x = int(face_landmarks.landmark[idx].x * image.shape[1])
-                                y = int(face_landmarks.landmark[idx].y * image.shape[0])
+                                x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
+                                y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
                                 right_iris_points.append((x, y))
                             right_iris_points = np.array(right_iris_points, dtype=np.int32)
                             (rx, ry), right_radius = cv2.minEnclosingCircle(right_iris_points)
