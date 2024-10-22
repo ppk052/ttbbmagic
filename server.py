@@ -108,17 +108,16 @@ class server:
                 print(self.bright)
                 #평균밝기가 일정 수치 이하일때 실행
                 self.update = True
-                if self.bright <= 10:
-                    try:
-                        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
-                        self.sunpos=[maxLoc[0],maxLoc[1]]
-                    except Exception as e:
-                        print(e)
-                        print("다음카메라로 넘어갑니다")
-                        self.update = False
-                        pass
-                    # 태양의 위치에 원 그리기
-                    #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
+                try:
+                    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(image)
+                    self.sunpos=[maxLoc[0],maxLoc[1]]
+                except Exception as e:
+                    print(e)
+                    print("다음카메라로 넘어갑니다")
+                    self.update = False
+                    pass
+                # 태양의 위치에 원 그리기
+                #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
                 self.num=0
             picam0.close()
             time.sleep(1)
