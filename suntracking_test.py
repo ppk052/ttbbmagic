@@ -12,6 +12,7 @@ def sun_tracking_from_camera():
     
     while True:
         frame = picam2.capture_array()  # Picamera2에서 이미지를 캡처
+        print(frame.shape)
 
         # 이미지를 그레이스케일로 변환
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -26,10 +27,8 @@ def sun_tracking_from_camera():
         # 태양의 위치에 원 그리기
         cv2.circle(frame, maxLoc, 20, (0, 0, 255), 2)
         
-        sp3d = sunPos3D.runSunPos3D(sunpos[0], sunpos[1])
         # 태양의 위치를 실시간으로 표시
         cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-        cv2.putText(frame, f"cal: {[sp3d[1],sp3d[2]]}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
         # 결과 영상 출력
         cv2.imshow("Sun Tracking (Press 'q' to quit)", frame)
