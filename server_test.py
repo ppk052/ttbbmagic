@@ -104,6 +104,7 @@ class server:
                             else:
                                 self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                             self.num += 1
+                picam0.close()
             #태양위치추출
             elif self.num==2:
                 cnt = 0
@@ -111,8 +112,8 @@ class server:
                 while cnt <=1000:
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
-                    self.bright = np.mean(image)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    self.bright = np.mean(gray)
                     print(self.bright)
                     #평균밝기가 일정 수치 이하일때 실행
                     self.update = True
@@ -149,4 +150,5 @@ class server:
                             print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                         self.update = False
                 self.num=0
+                picam0.close()
 server1 =server([0,0,0],False)
