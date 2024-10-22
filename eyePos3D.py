@@ -16,7 +16,7 @@ def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
         x = F*M / A
     else:
         x = 2*F*M / (A-C) 
-    y = A*x / F
+    y = M - (A*x / F)
     z = (B+D) * x / (2*F)
 
     print("x:", x)
