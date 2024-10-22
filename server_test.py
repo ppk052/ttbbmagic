@@ -104,35 +104,33 @@ class server:
                                 right_center = (int(rx) * -1, int(ry) * -1)
                                 right_radius = int(right_radius)
                                 if self.num==0:
-                                    self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                                     for i in range(2):
                                         self.eyeposcam1[0][i] += left_center[i]
                                     for i in range(2):
-                                        self.eyeposcam1[1][i] += left_center[i]
+                                        self.eyeposcam1[0][i] += left_center[i]
                                 else:
-                                    self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
                                     for i in range(2):
-                                        self.eyeposcam2[0][i] += left_center[i]
+                                        self.eyeposcam2[1][i] += left_center[i]
                                     for i in range(2):
                                         self.eyeposcam2[1][i] += left_center[i]
                         else:
                             no_cnt+=1
-                    ##end of while
-                    max_num = 50
-                    if no_cnt == cnt:
-                        self.num = 0
-                        continue
-                    elif self.num == 0:
-                        for i in range(2):
-                            self.eyeposcam1[0][i] /= (max_num - no_cnt) 
-                        for i in range(2):
-                            self.eyeposcam1[1][i] /= (max_num - no_cnt) 
-                    else:
-                        for i in range(2):
-                            self.eyeposcam2[0][i] /= (max_num - no_cnt) 
-                        for i in range(2):
-                            self.eyeposcam2[1][i] /= (max_num - no_cnt) 
-                    self.num+=1
+                ##end of while
+                max_num = 50
+                if no_cnt == cnt:
+                    self.num = 0
+                    continue
+                elif self.num == 0:
+                    for i in range(2):
+                        self.eyeposcam1[0][i] /= (max_num - no_cnt) 
+                    for i in range(2):
+                        self.eyeposcam1[1][i] /= (max_num - no_cnt) 
+                else:
+                    for i in range(2):
+                        self.eyeposcam2[0][i] /= (max_num - no_cnt) 
+                    for i in range(2):
+                        self.eyeposcam2[1][i] /= (max_num - no_cnt) 
+                self.num+=1
             #태양위치추출
             elif self.num==2:
                 cnt = 0
