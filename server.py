@@ -54,7 +54,7 @@ class server:
             picam0.start()
             
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
-            picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
+            #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
             
             # Picamera2에서 이미지를 캡처
             image = picam0.capture_array()  
@@ -118,7 +118,7 @@ class server:
                         pass
                     # 태양의 위치에 원 그리기
                     #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
-                    self.num=0
+                self.num=0
             picam0.close()
             time.sleep(1)
             if self.update:
