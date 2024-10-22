@@ -51,9 +51,8 @@ class server:
             
             # Picamera2 초기화
             picam0=Picamera2(self.num)
-            time.sleep(0.1)
             picam0.start()
-            time.sleep(0.1)
+            time.sleep(0.2)
 
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
@@ -61,6 +60,7 @@ class server:
             # Picamera2에서 이미지를 캡처
             image = picam0.capture_array()  
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+            time.sleep(0.1)
             print(f"{self.num}번째 카메라")
             print(image.shape)
             # 0,1 : 동공좌표추출, 2:해좌표추출
@@ -74,6 +74,7 @@ class server:
                     # MediaPipe Face Mesh 처리
                     #results는 눈 잡았는지 확인하는 boolean
                     results = face_mesh.process(image)
+                    time.sleep(0.1)
                     if results.multi_face_landmarks:
                         for face_landmarks in results.multi_face_landmarks:
                             
