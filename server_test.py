@@ -78,9 +78,9 @@ class server:
                         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                         # MediaPipe Face Mesh 처리
                         #results는 눈 잡았는지 확인하는 boolean
+                        cnt+=1
                         results = face_mesh.process(image)
                         if results.multi_face_landmarks:
-                            cnt+=1
                             for face_landmarks in results.multi_face_landmarks:
                                 
                                 # 왼쪽 홍채
