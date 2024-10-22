@@ -11,11 +11,11 @@ def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
 
     M = 200
 
-    ac = A+C
+    ac = A-C
     if ac == 0:
         x = F*M / A
     else:
-        x = 2*F*M / (A+C) 
+        x = 2*F*M / (A-C) 
     y = A*x / F
     z = (B+D) * x / (2*F)
 
