@@ -58,7 +58,6 @@ class server:
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
             
             print(f"{self.num}번째 카메라")
-            print(image.shape)
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
                 cnt = 0
