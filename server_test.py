@@ -146,4 +146,5 @@ class server:
                             await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
                             print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                         self.update = False
+                self.num=0
 server1 =server([0,0,0],False)
