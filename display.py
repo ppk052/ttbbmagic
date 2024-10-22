@@ -15,7 +15,7 @@ def caldisplay(eyeleft,eyeright,sun):
     #g = sun[2]
     max_x = 950
     max_y = 540
-    e,f,g = -1,0,0
+    e,f,g = -3,0,3**(1/2)
     a = eyeforcal[0]
     b = eyeforcal[1]
     c = eyeforcal[2]
