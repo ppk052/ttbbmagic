@@ -124,6 +124,7 @@ class server:
             time.sleep(1)
             if self.update:
                 #여기에 알고리즘계산하기
+                print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
                 self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                 self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
                 self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
