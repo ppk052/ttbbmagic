@@ -10,8 +10,8 @@ def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
     if b==0:
         b=1
 
-    theta = b/l
-    pi = e/l
+    theta = math.atan(b/l)
+    pi = math.atan(e/l)
     #theta = math.pi / 4
     #pi = math.pi / 4
 
