@@ -109,6 +109,8 @@ class server:
                 cnt = 0
                 not_recg = 0
                 while cnt <=1000:
+                    image = picam0.capture_array()  
+                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     self.bright = np.mean(image)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                     print(self.bright)
