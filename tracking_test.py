@@ -40,7 +40,7 @@ with mp_face_mesh.FaceMesh(
                     left_iris_points.append((x, y))
                 left_iris_points = np.array(left_iris_points, dtype=np.int32)
                 (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
-                left_center = (int(rx) * -1, int(ry) * -1)
+                left_center = (int(lx) * -1, int(ly) * -1)
                 left_radius = int(left_radius)
                 cv2.circle(image, left_center, left_radius, (0, 255, 0), 1)
 
