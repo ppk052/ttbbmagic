@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from picamera2 import Picamera2, Preview
 
 # 실시간 태양 추적 함수
 def sun_tracking_from_camera():
