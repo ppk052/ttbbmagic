@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from picamera2 import Picamera2, Preview
+import sunPos3D
 
 # 실시간 태양 추적 함수
 def sun_tracking_from_camera():
@@ -25,9 +26,11 @@ def sun_tracking_from_camera():
         # 태양의 위치에 원 그리기
         cv2.circle(frame, maxLoc, 20, (0, 0, 255), 2)
         
+        sp3d = sunPos3D.runSunPos3D(sunpos[0], sunpos[1])
         # 태양의 위치를 실시간으로 표시
         cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-        
+        cv2.putText(frame, f"Sun Position: {sp3d}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+
         # 결과 영상 출력
         cv2.imshow("Sun Tracking (Press 'q' to quit)", frame)
         
