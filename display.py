@@ -24,4 +24,5 @@ def caldisplay(eyeleft,eyeright,sun,):
     print(display3D)
     # 디스플레이 퍼센트 계산식
     result = [(display3D[1]+max_x/2)/max_x*100,(max_y-display3D[2]/math.sin(math.pi/3))/max_y*100] # y%, x%
+    print("%y, %x",result)
     return result
