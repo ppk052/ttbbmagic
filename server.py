@@ -131,7 +131,7 @@ class server:
                 self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
                 self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
                 if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
-                    await websocket.send(f"({self.message[0]},{self.message[1]},{self.message[2]})")
-                    print(f"({self.message[0]},{self.message[1]},{self.message[2]})sended")
+                    await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
+                    print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                 self.update = False
 server1 =server([0,0,0],False)
