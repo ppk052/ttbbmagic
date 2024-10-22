@@ -1,4 +1,5 @@
 from picamera2 import Picamera2, Preview
+from libcamera import controls
 import websockets
 import asyncio
 import time
@@ -27,6 +28,8 @@ class server:
         self.calculateddp=[0,0]
         self.message = message  
         self.status = False  
+        #카메라 초점거리 단위는 미터
+        self.focus = 0.1
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -49,6 +52,10 @@ class server:
             # Picamera2 초기화
             picam0=Picamera2(self.num)
             picam0.start()
+            
+            #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
+            picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
+            
             # Picamera2에서 이미지를 캡처
             image = picam0.capture_array()  
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
