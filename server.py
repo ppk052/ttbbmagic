@@ -114,6 +114,9 @@ class server:
                 try:
                     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
                     self.sunpos=[maxLoc[0]- (image.shape[1] / 2), maxLoc[1]- (image.shape[0] / 2)]
+                    #반전
+                    self.sunpos[0] = self.sunpos[0] * -1 
+                    self.sunpos[1] = self.sunpos[1] * -1
                 except Exception as e:
                     print(e)
                     print("다음카메라로 넘어갑니다")
