@@ -10,7 +10,7 @@ def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
     #theta = math.pi / 4
     #pi = math.pi / 4
 
-    M = 1
+    M = 100
 
     x = 2*((M*math.tan(pi))/(math.tan(theta) + math.tan(pi))) / math.tan(pi)
     y = M*(math.tan(theta) - math.tan(pi))/(math.tan(theta) + math.tan(pi))
