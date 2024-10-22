@@ -97,10 +97,8 @@ class server:
                             right_radius = int(right_radius)
                             if self.num==0:
                                 self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                                print(self.eyeposcam1)
                             else:
                                 self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                                print(self.eyeposcam2)
                             self.num += 1
             #태양위치추출
             if self.num==2:
@@ -124,6 +122,8 @@ class server:
             time.sleep(1)
             if self.update:
                 #여기에 알고리즘계산하기
+                print("camera1: ",self.eyeposcam1)
+                print("camera2: ",self.eyeposcam2)
                 print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
                 self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                 self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
