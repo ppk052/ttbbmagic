@@ -26,10 +26,9 @@ webSocket.onmessage = function (message) {
       write = true;
       console.log("보임");
     }
-    console.log(info[2] + "%");
+    console.log("y:", info[2] + "%");
     circle.style.top = info[2] + "%";
-    console.log(info[3] + "%");
+    console.log("x:", info[3] + "%");
     circle.style.left = info[3] + "%";
   }
 };
-
