@@ -132,8 +132,7 @@ class server:
                             self.eyeposcam2[0][i] /= (max_num - no_cnt) 
                         for i in range(2):
                             self.eyeposcam2[1][i] /= (max_num - no_cnt) 
-                    num+=1
-                picam0.close()
+                    self.num+=1
             #태양위치추출
             elif self.num==2:
                 cnt = 0
@@ -179,5 +178,5 @@ class server:
                             print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                         self.update = False
                 self.num=0
-                picam0.close()
+            picam0.close()
 server1 =server([0,0,0],False)
