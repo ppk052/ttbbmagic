@@ -2,8 +2,8 @@ import math
 
 def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
     
-    b, a, e, d = 1,1,1,1 #나중에 바꿀곳
-    l = 0.2 #나중에 바꿀곳
+    b, a, e, d = cam0x,cam0y,cam1x,cam1y #나중에 바꿀곳
+    l = 0.2 #카메라 초점거리
 
     theta = b/l
     pi = e/l
