@@ -21,5 +21,5 @@ def caldisplay(eyeleft,eyeright,sun):
     # 디스플레이 3차원좌표 계산식
     display3D = [(c*e-a*g)*math.cos/(e*math.sin-g*math.cos),((c*f-b*g)*math.cos+(b*e-a*f)*math.sin)/(e*math.sin-g*math.cos),(c*e-a*g)*math.sin/(e*math.sin-g*math.cos)] 
     # 디스플레이 퍼센트 계산식
-    result = [(display3D[1]+max_x/2)/max_x*100,(max_y-display3D[2]/math.sin)/max_y*100]
+    result = [(display3D[1]+max_x/2)/max_x*100,(max_y-display3D[2]/math.sin)/max_y*100] # x%, y%
     return result
