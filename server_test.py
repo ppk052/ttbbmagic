@@ -73,8 +73,10 @@ class server:
                     
                     while cnt <= 50: 
                         # Picamera2에서 이미지를 캡처
+                        print("===debug1===")
                         image = picam0.capture_array()  
                         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+                        print("===debug2===")
                         # MediaPipe Face Mesh 처리
                         #results는 눈 잡았는지 확인하는 boolean
                         cnt+=1
@@ -107,12 +109,12 @@ class server:
                                     for i in range(2):
                                         self.eyeposcam1[0][i] += left_center[i]
                                     for i in range(2):
-                                        self.eyeposcam1[0][i] += left_center[i]
+                                        self.eyeposcam1[1][i] += right_center[i]
                                 else:
                                     for i in range(2):
-                                        self.eyeposcam2[1][i] += left_center[i]
+                                        self.eyeposcam2[0][i] += left_center[i]
                                     for i in range(2):
-                                        self.eyeposcam2[1][i] += left_center[i]
+                                        self.eyeposcam2[1][i] += right_center[i]
                         else:
                             no_cnt+=1
                 ##end of while
