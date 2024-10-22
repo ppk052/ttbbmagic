@@ -119,7 +119,6 @@ class server:
                 #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
                 self.num=0
             picam0.close()
-            time.sleep(1)
             if self.update:
                 #여기에 알고리즘계산하기
                 print("camera1: ",self.eyeposcam1)
