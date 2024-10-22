@@ -16,9 +16,12 @@ def caldisplay(eyeleft,eyeright,sun):
     max_x = 950
     max_y = 540
     e,f,g = -3,0,3**(1/2)
-    a = eyeforcal[0]
-    b = eyeforcal[1]
-    c = eyeforcal[2]
+    #a = eyeforcal[0]
+    #b = eyeforcal[1]
+    #c = eyeforcal[2]
+    a=900
+    b=0
+    c=0
     # 디스플레이 3차원좌표 계산식
     display3D = [(c*e-a*g)*math.cos((math.pi)/3)/(e*math.sin((math.pi)/3)-g*math.cos((math.pi)/3)),((c*f-b*g)*math.cos((math.pi)/3)+(b*e-a*f)*math.sin((math.pi)/3))/(e*math.sin((math.pi)/3)-g*math.cos((math.pi)/3)),((c*e-a*g)*math.sin((math.pi)/3))/(e*math.sin((math.pi)/3)-g*math.cos((math.pi)/3))] 
     print(display3D)
@@ -26,3 +29,6 @@ def caldisplay(eyeleft,eyeright,sun):
     result = [(display3D[1]+max_x/2)/max_x*100,(max_y-display3D[2]/math.sin(math.pi/3))/max_y*100] # y%, x%
     print("%y, %x",result)
     return result
+
+if __name__ == "__main__":
+    caldisplay([0,0,0],[0,0,0],[0,0,0])
