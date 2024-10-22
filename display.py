@@ -10,12 +10,12 @@ def caldisplay(eyeleft,eyeright,sun):
     display3D= [0,0,0]
     #최종 디스플레이 퍼센트 = result, max_x는 디스플레이 계산식의 A, max_y는 디스플레이 계산식의 B 나머지는 동일
     result = [0,0]
-    #e = sun[0]
-    #f = sun[1]
-    #g = sun[2]
+    e = sun[0]
+    f = sun[1]
+    g = sun[2]
+    #e,f,g = -3,0,3**(1/2)
     max_x = 950
     max_y = 540
-    e,f,g = -3,0,3**(1/2)
     a = eyeforcal[0]
     b = eyeforcal[1]
     c = eyeforcal[2]
