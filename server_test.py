@@ -118,7 +118,8 @@ class server:
                         else:
                             no_cnt+=1
                     print("===debug3===")
-                ##end of while
+                    picam0.close()
+                #end of while
                 max_num = 50
                 if no_cnt == cnt:
                     self.num = 0
