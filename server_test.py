@@ -10,7 +10,6 @@ import mediapipe as mp
 import numpy as np
 import cv2
 import os
-import filter
 
 class server:
     connected = False
@@ -28,7 +27,10 @@ class server:
         self.calculatedsun=[0,0,0]
         self.calculateddp=[0,0]
         self.message = message  
-        self.status = False  
+        self.status = False
+        self.max_eyecnt = 5
+        self.max_suncnt = 50  
+        self.max_not_recg = 5
         #선트래킹을 위한 변수
         self.sun_center = []
         start_server = websockets.serve(self.hello, "localhost", 8000)
@@ -72,7 +74,7 @@ class server:
                     min_detection_confidence=0.5,
                     min_tracking_confidence=0.5) as face_mesh:
                     
-                    while cnt <= 50: 
+                    while cnt <= self.max_eyecnt: 
                         # Picamera2에서 이미지를 캡처
                         image = picam0.capture_array()  
                         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
@@ -119,27 +121,27 @@ class server:
                     print("===debug3===")
                     picam0.close()
                 #end of while
-                max_num = 50
-                if no_cnt == cnt:
+                #max_num = 50
+                if no_cnt == self.max_eyecnt+1:
                     self.num = 0
                     continue
                 elif self.num == 0:
                     for i in range(2):
-                        self.eyeposcam1[0][i] /= (max_num - no_cnt) 
+                        self.eyeposcam1[0][i] /= (self.max_eyecnt - no_cnt) 
                     for i in range(2):
-                        self.eyeposcam1[1][i] /= (max_num - no_cnt) 
+                        self.eyeposcam1[1][i] /= (self.max_eyecnt - no_cnt) 
                 else:
                     for i in range(2):
-                        self.eyeposcam2[0][i] /= (max_num - no_cnt) 
+                        self.eyeposcam2[0][i] /= (self.max_eyecnt - no_cnt) 
                     for i in range(2):
-                        self.eyeposcam2[1][i] /= (max_num - no_cnt) 
+                        self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt) 
                 self.num+=1
                 print("===debug4===")
             #태양위치추출
             elif self.num==2:
                 cnt = 0
                 not_recg = 0
-                while cnt <=1000:
+                while cnt <=self.max_suncnt:
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -156,8 +158,11 @@ class server:
                         self.update = True
                     else:
                         print("No sun detected.")
-                    # 태양의 위치에 원 그리기
-                    #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
+                        self.update = False
+                        if not_recg == self.max_not_recg:
+                            await websocket.send("(0,0,0)")
+                            continue
+                        not_recg+=1
                     if self.update:
                         #여기에 알고리즘계산하기
                         cnt+=1
@@ -183,6 +188,6 @@ class server:
     def mod_sun_center(self,image):
         self.sun_center = [self.sun_center[0]- (image.shape[1] / 2), self.sun_center[1]- (image.shape[0] / 2)]
         self.sun_center[1] = self.sun_center[1] * -1
-        return self.sun_center
+        return 
         
 server1 =server([0,0,0],False)
