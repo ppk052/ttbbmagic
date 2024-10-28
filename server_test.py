@@ -29,8 +29,8 @@ class server:
         self.calculateddp=[0,0]
         self.message = message  
         self.status = False  
-        #카메라 초점거리 단위는 미터
-        self.focus = 0.1
+        #선트래킹을 위한 변수
+        self.sun_center = []
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -143,23 +143,19 @@ class server:
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                    self.bright = np.mean(gray)
-                    print(self.bright)
-                    #평균밝기가 일정 수치 이하일때 실행
-                    self.update = True
-                    try:
-                        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-                        self.sunpos=[maxLoc[0]- (image.shape[1] / 2), maxLoc[1]- (image.shape[0] / 2)]
-                        #반전
-                        self.sunpos[1] = self.sunpos[1] * -1
-                    except Exception as e:
-                        print(e)
-                        print("인식 못함")
-                        self.update = False
-                        if not_recg == 100:
-                            await websocket.send("(0,50,50)")
-                            continue
-                        not_recg+=1
+                    blurred_image = cv2.GaussianBlur(gray, (51, 51), 0)
+                    _, threshold_img = cv2.threshold(blurred_image, 252, 255, cv2.THRESH_BINARY)
+                    moments = cv2.moments(threshold_img, True)
+                    if moments['m00'] != 0:  # Prevent division by zero
+                        center_x = int(moments['m10'] / moments['m00'])
+                        center_y = int(moments['m01'] / moments['m00'])
+                        center = (center_x, center_y)
+                        self.set_sun_center(center)
+                        print(f"Sun Detected at: {self.sun_center[0]}, {self.sun_center[1]}")
+                        self.mod_sun_center(image)
+                        self.update = True
+                    else:
+                        print("No sun detected.")
                     # 태양의 위치에 원 그리기
                     #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
                     if self.update:
@@ -171,7 +167,7 @@ class server:
                         print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
                         self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                         self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
-                        self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
+                        self.calculatedsun = sunPos3D.runSunPos3D(self.sun_center[0],self.sun_center[1])
                         self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
                         self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
                         if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
@@ -180,4 +176,13 @@ class server:
                         self.update = False
                 self.num=0
             picam0.close()
+    def set_sun_center(self,center):
+        self.sun_center = [int(center[0]), int(center[1])]
+    def get_sun_center(self):
+        return self.sun_center
+    def mod_sun_center(self,image):
+        self.sun_center = [self.sun_center[0]- (image.shape[1] / 2), self.sun_center[1]- (image.shape[0] / 2)]
+        self.sun_center[1] = self.sun_center[1] * -1
+        return self.sun_center
+        
 server1 =server([0,0,0],False)

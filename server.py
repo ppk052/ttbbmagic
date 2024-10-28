@@ -29,8 +29,8 @@ class server:
         self.calculateddp=[0,0]
         self.message = message  
         self.status = False  
-        #카메라 초점거리 단위는 미터
-        self.focus = 0.1
+        #선트래킹을 위한 변수
+        self.sun_center = []
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -109,9 +109,8 @@ class server:
             elif self.num==2:
                 self.bright = np.mean(image)
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                print(self.bright)
-                #평균밝기가 일정 수치 이하일때 실행
-                self.update = True
+                blurred_image = cv2.GaussianBlur(gray,(51,51),0)
+                _, threshold_img = cv2.threshold(blurred_image,252,255,cv2.THRESH_BINARY)
                 try:
                     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
                     self.sunpos=[maxLoc[0]- (image.shape[1] / 2), maxLoc[1]- (image.shape[0] / 2)]
