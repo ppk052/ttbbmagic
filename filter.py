@@ -10,7 +10,18 @@ kf.P *= 1000.0    # 초기 불확실성 (high uncertainty)
 kf.R = np.eye(3) * 5  # 측정 노이즈 행렬
 kf.Q = np.eye(3) * 0.1  # 프로세스 노이즈 행렬 (필요에 따라 조정)
 
+#저주파필터
+alpha = 0.5
+previous_position = None
+
 def kalmanfilter(data):
     kf.predict()
     kf.update(data)
     return kf.x.flatten()
+
+def lowpassfilter(data):
+    if previous_position is None:
+        previous_position = data
+    else:
+        previous_position = (alpha*data+(1-alpha)*previous_position)
+    return previous_position
