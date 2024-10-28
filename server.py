@@ -10,7 +10,6 @@ import mediapipe as mp
 import numpy as np
 import cv2
 import os
-import filter
 
 class server:
     connected = False
@@ -28,7 +27,10 @@ class server:
         self.calculatedsun=[0,0,0]
         self.calculateddp=[0,0]
         self.message = message  
-        self.status = False  
+        self.status = False
+        self.max_eyecnt = 5
+        self.max_suncnt = 50  
+        self.max_not_recg = 5
         #선트래킹을 위한 변수
         self.sun_center = []
         start_server = websockets.serve(self.hello, "localhost", 8000)
@@ -58,88 +60,134 @@ class server:
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
             
-            # Picamera2에서 이미지를 캡처
-            image = picam0.capture_array()  
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
-            time.sleep(0.2)
             print(f"{self.num}번째 카메라")
-            print(image.shape)
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
+                cnt = 0
+                no_cnt = 0
+                #눈위치 초기화
+                if self.num == 0: self.eyeposcam1 = [[0,0],[0,0]]
+                elif self.num == 1: self.eyeposcam2 = [[0,0],[0,0]]
                 with mp_face_mesh.FaceMesh(
                     max_num_faces=1,
                     refine_landmarks=True,
                     min_detection_confidence=0.5,
                     min_tracking_confidence=0.5) as face_mesh:
                     
-                    # MediaPipe Face Mesh 처리
-                    #results는 눈 잡았는지 확인하는 boolean
-                    results = face_mesh.process(image)
-                    time.sleep(0.2)
-                    if results.multi_face_landmarks:
-                        for face_landmarks in results.multi_face_landmarks:
-                            
-                            # 왼쪽 홍채
-                            left_iris_points = []
-                            for idx in LEFT_IRIS:
-                                x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
-                                y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
-                                left_iris_points.append((x, y))
-                            left_iris_points = np.array(left_iris_points, dtype=np.int32)
-                            (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
-                            left_center = (int(lx) * -1, int(ly) * -1)
-                            left_radius = int(left_radius)
-                            
-                            # 오른쪽 홍채
-                            right_iris_points = []
-                            for idx in RIGHT_IRIS:
-                                x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
-                                y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
-                                right_iris_points.append((x, y))
-                            right_iris_points = np.array(right_iris_points, dtype=np.int32)
-                            (rx, ry), right_radius = cv2.minEnclosingCircle(right_iris_points)
-                            right_center = (int(rx) * -1, int(ry) * -1)
-                            right_radius = int(right_radius)
-                            if self.num==0:
-                                self.eyeposcam1 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                            else:
-                                self.eyeposcam2 = [[left_center[0],left_center[1]],[right_center[0],right_center[1]]]
-                            self.num += 1
+                    while cnt <= self.max_eyecnt: 
+                        # Picamera2에서 이미지를 캡처
+                        image = picam0.capture_array()  
+                        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+                        # MediaPipe Face Mesh 처리
+                        #results는 눈 잡았는지 확인하는 boolean
+                        cnt+=1
+                        results = face_mesh.process(image)
+                        if results.multi_face_landmarks:
+                            for face_landmarks in results.multi_face_landmarks:
+                                
+                                # 왼쪽 홍채
+                                left_iris_points = []
+                                for idx in LEFT_IRIS:
+                                    x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
+                                    y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
+                                    left_iris_points.append((x, y))
+                                left_iris_points = np.array(left_iris_points, dtype=np.int32)
+                                (lx, ly), left_radius = cv2.minEnclosingCircle(left_iris_points)
+                                left_center = (int(lx) * -1, int(ly) * -1)
+                                left_radius = int(left_radius)
+                                
+                                # 오른쪽 홍채
+                                right_iris_points = []
+                                for idx in RIGHT_IRIS:
+                                    x = int(face_landmarks.landmark[idx].x * image.shape[1]) - (image.shape[1] / 2)
+                                    y = int(face_landmarks.landmark[idx].y * image.shape[0]) - (image.shape[0] / 2)
+                                    right_iris_points.append((x, y))
+                                right_iris_points = np.array(right_iris_points, dtype=np.int32)
+                                (rx, ry), right_radius = cv2.minEnclosingCircle(right_iris_points)
+                                right_center = (int(rx) * -1, int(ry) * -1)
+                                right_radius = int(right_radius)
+                                if self.num==0:
+                                    for i in range(2):
+                                        self.eyeposcam1[0][i] += left_center[i]
+                                    for i in range(2):
+                                        self.eyeposcam1[1][i] += right_center[i]
+                                else:
+                                    for i in range(2):
+                                        self.eyeposcam2[0][i] += left_center[i]
+                                    for i in range(2):
+                                        self.eyeposcam2[1][i] += right_center[i]
+                        else:
+                            no_cnt+=1
+                    print("===debug3===")
+                    picam0.close()
+                #end of while
+                #max_num = 50
+                if no_cnt == self.max_eyecnt+1:
+                    self.num = 0
+                    continue
+                elif self.num == 0:
+                    for i in range(2):
+                        self.eyeposcam1[0][i] /= (self.max_eyecnt - no_cnt) 
+                    for i in range(2):
+                        self.eyeposcam1[1][i] /= (self.max_eyecnt - no_cnt) 
+                else:
+                    for i in range(2):
+                        self.eyeposcam2[0][i] /= (self.max_eyecnt - no_cnt) 
+                    for i in range(2):
+                        self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt) 
+                self.num+=1
+                print("===debug4===")
             #태양위치추출
             elif self.num==2:
-                self.bright = np.mean(image)
-                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                blurred_image = cv2.GaussianBlur(gray,(51,51),0)
-                _, threshold_img = cv2.threshold(blurred_image,252,255,cv2.THRESH_BINARY)
-                try:
-                    (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-                    self.sunpos=[maxLoc[0]- (image.shape[1] / 2), maxLoc[1]- (image.shape[0] / 2)]
-                    self.sunpos[0]=filter.kalmanfilter(self.sunpos[0])
-                    self.sunpos[1]=filter.kalmanfilter(self.sunpos[1])
-                    #반전
-                    self.sunpos[0] = self.sunpos[0] * -1 
-                    self.sunpos[1] = self.sunpos[1] * -1
-                except Exception as e:
-                    print(e)
-                    print("다음카메라로 넘어갑니다")
-                    self.update = False
-                    pass
-                # 태양의 위치에 원 그리기
-                #cv2.circle(image, maxLoc, 40, (0, 0, 255), 2)
+                cnt = 0
+                not_recg = 0
+                while cnt <=self.max_suncnt:
+                    image = picam0.capture_array()  
+                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+                    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    blurred_image = cv2.GaussianBlur(gray, (51, 51), 0)
+                    _, threshold_img = cv2.threshold(blurred_image, 252, 255, cv2.THRESH_BINARY)
+                    moments = cv2.moments(threshold_img, True)
+                    if moments['m00'] != 0:  # Prevent division by zero
+                        center_x = int(moments['m10'] / moments['m00'])
+                        center_y = int(moments['m01'] / moments['m00'])
+                        center = (center_x, center_y)
+                        self.set_sun_center(center)
+                        print(f"Sun Detected at: {self.sun_center[0]}, {self.sun_center[1]}")
+                        self.mod_sun_center(image)
+                        self.update = True
+                    else:
+                        print("No sun detected.")
+                        self.update = False
+                        if not_recg == self.max_not_recg:
+                            await websocket.send("(0,0,0)")
+                            continue
+                        not_recg+=1
+                    if self.update:
+                        #여기에 알고리즘계산하기
+                        cnt+=1
+                        not_recg = 0
+                        print("camera1: ",self.eyeposcam1)
+                        print("camera2: ",self.eyeposcam2)
+                        print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
+                        self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
+                        self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
+                        self.calculatedsun = sunPos3D.runSunPos3D(self.sun_center[0],self.sun_center[1])
+                        self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
+                        self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
+                        if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
+                            await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
+                            print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
+                        self.update = False
                 self.num=0
             picam0.close()
-            if self.update:
-                #여기에 알고리즘계산하기
-                print("camera1: ",self.eyeposcam1)
-                print("camera2: ",self.eyeposcam2)
-                print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
-                self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
-                self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
-                self.calculatedsun = sunPos3D.runSunPos3D(self.sunpos[0],self.sunpos[1])
-                self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
-                self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
-                if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
-                    await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
-                    print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
-                self.update = False
+    def set_sun_center(self,center):
+        self.sun_center = [int(center[0]), int(center[1])]
+    def get_sun_center(self):
+        return self.sun_center
+    def mod_sun_center(self,image):
+        self.sun_center = [self.sun_center[0]- (image.shape[1] / 2), self.sun_center[1]- (image.shape[0] / 2)]
+        self.sun_center[1] = self.sun_center[1] * -1
+        return 
+        
 server1 =server([0,0,0],False)
