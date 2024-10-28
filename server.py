@@ -10,6 +10,7 @@ import mediapipe as mp
 import numpy as np
 import cv2
 import os
+import filter
 
 class server:
     connected = False
@@ -114,6 +115,8 @@ class server:
                 try:
                     (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
                     self.sunpos=[maxLoc[0]- (image.shape[1] / 2), maxLoc[1]- (image.shape[0] / 2)]
+                    self.sunpos[0]=filter.kalmanfilter(self.sunpos[0])
+                    self.sunpos[1]=filter.kalmanfilter(self.sunpos[1])
                     #반전
                     self.sunpos[0] = self.sunpos[0] * -1 
                     self.sunpos[1] = self.sunpos[1] * -1
