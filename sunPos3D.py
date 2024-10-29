@@ -1,6 +1,6 @@
 import math
 
-def runSunPos3D(alpha, beta):
+def runSunPos3D(alpha, beta, gamma, delta):
     a = 640 / 2
     b = 480 / 2
 

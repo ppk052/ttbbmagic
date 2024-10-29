@@ -4,7 +4,7 @@ import websockets
 import asyncio
 import time
 import eyePos3D
-import sunPos3D
+import sunPos3D_new
 import display
 import mediapipe as mp
 import numpy as np
@@ -16,7 +16,8 @@ class server:
     def __init__(self,message,status):
         self.eyeposcam1 = [[0,0],[0,0]]
         self.eyeposcam2 = [[0,0],[0,0]]
-        self.sunpos = [0,0]
+        self.sunpos1 = [0,0]
+        self.sunpos2 = [0,0]
         self.num = 0
         self.update = False
         self.bright = 0;
@@ -29,10 +30,10 @@ class server:
         self.message = message  
         self.status = False
         self.max_eyecnt = 5
-        self.max_suncnt = 50  
+        self.max_suncnt = 50
         self.max_not_recg = 5
         #선트래킹을 위한 변수
-        self.sun_center = []
+        self.sun_center = [0,0]
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -55,7 +56,7 @@ class server:
             # Picamera2 초기화
             picam0=Picamera2(self.num)
             picam0.start()
-            time.sleep(0.4)
+            #time.sleep(0.4)
 
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
@@ -135,13 +136,10 @@ class server:
                         self.eyeposcam2[0][i] /= (self.max_eyecnt - no_cnt) 
                     for i in range(2):
                         self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt) 
-                if self.eyeposcam1[0][1]==0 or self.eyeposcam2[0][1]==0:
-                    self.num=0
-                else:
-                    self.num+=1
+                self.num+=1
                 print("===debug4===")
             #태양위치추출
-            elif self.num==2:
+            elif self.num==2 or self.num==3:
                 cnt = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
@@ -166,6 +164,11 @@ class server:
                             await websocket.send("(0,0,0)")
                             continue
                         not_recg+=1
+                if self.num==2:
+                    self.sunpos1=self.sun_center
+                    self.num=3
+                else:
+                    self.sunpos2=self.sun_center
                     if self.update:
                         #여기에 알고리즘계산하기
                         cnt+=1
@@ -175,14 +178,14 @@ class server:
                         print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
                         self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                         self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
-                        self.calculatedsun = sunPos3D.runSunPos3D(self.sun_center[0],self.sun_center[1])
+                        self.calculatedsun = sunPos3D_new.runSunPos3D(self.sunpos1[0],self.sunpos1[1],self.sunpos2[0],self.sunpos2[1])
                         self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
                         self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
                         if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
                             await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
                             print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                         self.update = False
-                self.num=0
+                    self.num=0
             picam0.close()
     def set_sun_center(self,center):
         self.sun_center = [int(center[0]), int(center[1])]
