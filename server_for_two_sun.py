@@ -5,7 +5,7 @@ import asyncio
 import time
 import eyePos3D
 import sunPos3D_new
-import display
+import display_new
 import mediapipe as mp
 import numpy as np
 import cv2
@@ -179,7 +179,7 @@ class server:
                         self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                         self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
                         self.calculatedsun = sunPos3D_new.runSunPos3D(self.sunpos1[0],self.sunpos1[1],self.sunpos2[0],self.sunpos2[1])
-                        self.calculateddp = display.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
+                        self.calculateddp = display_new.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
                         self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
                         if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
                             await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
