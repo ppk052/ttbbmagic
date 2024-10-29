@@ -35,6 +35,7 @@ class server:
         #선트래킹을 위한 변수
         self.sun_center = [0,0]
         self.camchange =0
+        self.find = True
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -145,9 +146,10 @@ class server:
                 cnt = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
-                    # Picamera2 초기화
-                    picam0=Picamera2(self.num)
-                    picam0.start()
+                    if self.find and not self.update:
+                        # Picamera2 초기화
+                        picam0=Picamera2(self.num)
+                        picam0.start()    
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -161,37 +163,41 @@ class server:
                         self.set_sun_center(center)
                         print(f"Sun Detected at: {self.sun_center[0]}, {self.sun_center[1]}")
                         self.mod_sun_center(image)
-                        self.update = True
+                        self.find = True
+                        if self.num==2:
+                            self.sunpos1=self.sun_center
+                        else:
+                            self.sunpos2=self.sun_center
                     else:
                         print("No sun detected.")
-                        self.update = False
-                        if not_recg == self.max_not_recg:
+                        """if not_recg == self.max_not_recg:
                             await websocket.send("(0,0,0)")
+                            self.find = False
                             continue
-                        not_recg+=1
+                        not_recg+=1"""
+                        self.find=False
                         continue
-                    if self.num==2:
-                        self.sunpos1=self.sun_center
-                        self.num=3
+                    if self.update:
+                        print("camera1: ",self.eyeposcam1)
+                        print("camera2: ",self.eyeposcam2)
+                        print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
+                        self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
+                        self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
+                        self.calculatedsun = sunPos3D_new.runSunPos3D(self.sun_center[0],self.sun_center[1])
+                        self.calculateddp = display_new.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
+                        self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
+                        if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
+                            await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
+                            print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
+                        self.update = False
                     else:
-                        self.sunpos2=self.sun_center
-                        if self.update:
-                            #여기에 알고리즘계산하기
-                            cnt+=1
-                            not_recg = 0
-                            print("camera1: ",self.eyeposcam1)
-                            print("camera2: ",self.eyeposcam2)
-                            print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
-                            self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
-                            self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
-                            self.calculatedsun = sunPos3D_new.runSunPos3D(self.sunpos1[0],self.sunpos1[1],self.sunpos2[0],self.sunpos2[1])
-                            self.calculateddp = display_new.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
-                            self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
-                            if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
-                                await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
-                                print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
-                            self.update = False
-                    picam0.close()
+                        if self.num==2:
+                            self.num=3
+                        else:
+                            self.num=2
+                        self.update = True
+                        picam0.close()
+                    cnt+=1
                 self.num=0
     def set_sun_center(self,center):
         self.sun_center = [int(center[0]), int(center[1])]
