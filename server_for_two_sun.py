@@ -34,6 +34,7 @@ class server:
         self.max_not_recg = 5
         #선트래킹을 위한 변수
         self.sun_center = [0,0]
+        self.camchange =0
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -53,9 +54,6 @@ class server:
             LEFT_IRIS = [474, 475, 476, 477]
             RIGHT_IRIS = [469, 470, 471, 472]
             
-            # Picamera2 초기화
-            picam0=Picamera2(self.num)
-            picam0.start()
             #time.sleep(0.4)
 
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
@@ -64,6 +62,9 @@ class server:
             print(f"{self.num}번째 카메라")
             # 0,1 : 동공좌표추출, 2:해좌표추출
             if self.num==0 or self.num == 1:
+                # Picamera2 초기화
+                picam0=Picamera2(self.num)
+                picam0.start()
                 cnt = 0
                 no_cnt = 0
                 #눈위치 초기화
@@ -137,12 +138,16 @@ class server:
                     for i in range(2):
                         self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt) 
                 self.num+=1
+                picam0.close()
                 print("===debug4===")
             #태양위치추출
             elif self.num==2 or self.num==3:
                 cnt = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
+                    # Picamera2 초기화
+                    picam0=Picamera2(self.num)
+                    picam0.start()
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -164,29 +169,30 @@ class server:
                             await websocket.send("(0,0,0)")
                             continue
                         not_recg+=1
-                if self.num==2:
-                    self.sunpos1=self.sun_center
-                    self.num=3
-                else:
-                    self.sunpos2=self.sun_center
-                    if self.update:
-                        #여기에 알고리즘계산하기
-                        cnt+=1
-                        not_recg = 0
-                        print("camera1: ",self.eyeposcam1)
-                        print("camera2: ",self.eyeposcam2)
-                        print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
-                        self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
-                        self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
-                        self.calculatedsun = sunPos3D_new.runSunPos3D(self.sunpos1[0],self.sunpos1[1],self.sunpos2[0],self.sunpos2[1])
-                        self.calculateddp = display_new.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
-                        self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
-                        if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
-                            await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
-                            print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
-                        self.update = False
-                    self.num=0
-            picam0.close()
+                        continue
+                    if self.num==2:
+                        self.sunpos1=self.sun_center
+                        self.num=3
+                    else:
+                        self.sunpos2=self.sun_center
+                        if self.update:
+                            #여기에 알고리즘계산하기
+                            cnt+=1
+                            not_recg = 0
+                            print("camera1: ",self.eyeposcam1)
+                            print("camera2: ",self.eyeposcam2)
+                            print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
+                            self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
+                            self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
+                            self.calculatedsun = sunPos3D_new.runSunPos3D(self.sunpos1[0],self.sunpos1[1],self.sunpos2[0],self.sunpos2[1])
+                            self.calculateddp = display_new.caldisplay(self.calculatedleft,self.calculatedright,self.calculatedsun)
+                            self.message = [1,int(self.calculateddp[0]),int(self.calculateddp[1])]
+                            if  (0 <= self.message[1] and self.message[1] <= 100) and (0 <= self.message[2] and self.message[2] <= 100):
+                                await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
+                                print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
+                            self.update = False
+                    picam0.close()
+                self.num=0
     def set_sun_center(self,center):
         self.sun_center = [int(center[0]), int(center[1])]
     def get_sun_center(self):
