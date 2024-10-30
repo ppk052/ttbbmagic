@@ -18,14 +18,24 @@ def sun_tracking_from_camera():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
         # 그레이스케일 이미지에서 가장 밝은 부분 찾기
-        (minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
-        sunpos=[maxLoc[0]- (frame.shape[1] / 2), maxLoc[1]- (frame.shape[0] / 2)]
+        #(minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(gray)
+        #sunpos=[maxLoc[0]- (frame.shape[1] / 2), maxLoc[1]- (frame.shape[0] / 2)]
         #반전
-        sunpos[0] = sunpos[0] * -1 
-        sunpos[1] = sunpos[1] * -1
+        #sunpos[0] = sunpos[0] * -1 
+        #sunpos[1] = sunpos[1] * -1
+
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred_image = cv2.GaussianBlur(gray, (51, 51), 0)
+        _, threshold_img = cv2.threshold(blurred_image, 252, 255, cv2.THRESH_BINARY)
+        moments = cv2.moments(threshold_img, True)
+        if moments['m00'] != 0:  # Prevent division by zero
+            center_x = int(moments['m10'] / moments['m00'])
+            center_y = int(moments['m01'] / moments['m00'])
+            sunpos = [center_x, center_y]
         
         # 태양의 위치에 원 그리기
-        cv2.circle(frame, maxLoc, 20, (0, 0, 255), 2)
+        cv2.circle(frame, sunpos, 20, (0, 0, 255), 2)
         
         # 태양의 위치를 실시간으로 표시
         cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
