@@ -203,7 +203,6 @@ class server:
                         else:
                             self.num=2
                         self.update = True
-                        self.firstsend = True
                         picam0.close()
                     cnt+=1
                 self.num=0
