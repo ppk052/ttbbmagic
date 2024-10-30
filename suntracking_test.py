@@ -24,7 +24,7 @@ def sun_tracking_from_camera():
         #sunpos[0] = sunpos[0] * -1 
         #sunpos[1] = sunpos[1] * -1
 
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+        image = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         blurred_image = cv2.GaussianBlur(gray, (51, 51), 0)
         _, threshold_img = cv2.threshold(blurred_image, 252, 255, cv2.THRESH_BINARY)
