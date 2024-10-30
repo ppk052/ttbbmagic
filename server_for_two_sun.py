@@ -131,14 +131,14 @@ class server:
                     continue
                 elif self.num == 0:
                     for i in range(2):
-                        self.eyeposcam1[0][i] /= (self.max_eyecnt - no_cnt) 
+                        self.eyeposcam1[0][i] /= (self.max_eyecnt - no_cnt + 1) 
                     for i in range(2):
-                        self.eyeposcam1[1][i] /= (self.max_eyecnt - no_cnt) 
+                        self.eyeposcam1[1][i] /= (self.max_eyecnt - no_cnt + 1) 
                 else:
                     for i in range(2):
-                        self.eyeposcam2[0][i] /= (self.max_eyecnt - no_cnt) 
+                        self.eyeposcam2[0][i] /= (self.max_eyecnt - no_cnt + 1) 
                     for i in range(2):
-                        self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt) 
+                        self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt + 1) 
                 self.num+=1
                 picam0.close()
                 print("===debug4===")
