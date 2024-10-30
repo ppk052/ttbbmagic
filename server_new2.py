@@ -144,13 +144,9 @@ class server:
             #태양위치추출
             elif self.num==2 or self.num==3:
                 cnt = 0
-                cnt2 = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
-                    try:
-                        picam0.close()
-                    except:
-                        pass
+                    cnt2 = 0
                     picam0=Picamera2(self.num)
                     picam0.start()
                     while cnt2 < 10:
@@ -199,6 +195,11 @@ class server:
                     else:
                         self.num = 2
                     cnt+=1
+                    picam0.close()
+                    try:
+                        picam0.close()
+                    except:
+                        pass
                 #end of while
                 self.num=0
                 self.update = False

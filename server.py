@@ -55,7 +55,7 @@ class server:
             # Picamera2 초기화
             picam0=Picamera2(self.num)
             picam0.start()
-            time.sleep(0.4)
+            #time.sleep(0.4)
 
             #카메라 초점거리 조절 AfMode-초점모드, libcamera의 controls.AfModeEnum사용, LensPostion-초점거리조절, 원하는 초점거리의 역수로 설정
             #picam0.set_controls({"AfMode":controls.AfModeEnum.Manual, "LensPosition":float(1/self.focus)})
