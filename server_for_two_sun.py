@@ -147,13 +147,14 @@ class server:
                 cnt = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
-                    if self.find and self.update:
-                        # Picamera2 초기화
-                        picam0=Picamera2(self.num)
-                        picam0.start()
-                    if self.find and self.firstsend and not self.update:
-                        picam0=Picamera2(self.num)
-                        picam0.start()   
+                    if self.find:
+                        if self.update:
+                            # Picamera2 초기화
+                            picam0=Picamera2(self.num)
+                            picam0.start()
+                        if self.firstsend and not self.update:
+                            picam0=Picamera2(self.num)
+                            picam0.start()   
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -202,9 +203,15 @@ class server:
                         else:
                             self.num=2
                         self.update = True
+                        self.firstsend = True
                         picam0.close()
                     cnt+=1
                 self.num=0
+                try:
+                    picam0.close()
+                except:
+                    pass
+            
     def set_sun_center(self,center):
         self.sun_center = [int(center[0]), int(center[1])]
     def get_sun_center(self):
