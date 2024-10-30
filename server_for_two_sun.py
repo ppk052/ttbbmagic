@@ -184,7 +184,7 @@ class server:
                     if self.update:
                         print("camera1: ",self.eyeposcam1)
                         print("camera2: ",self.eyeposcam2)
-                        print(f"==============================({self.sunpos[0]}, {self.sunpos[1]} )==========================")
+                        print(f"==============================({self.sunpos1[0]}, {self.sunpos1[1]}, {self.sunpos2[0]},{self.sunpos2[1]} )==========================")
                         self.calculatedleft = eyePos3D.runEyePos3D(self.eyeposcam1[0][0],self.eyeposcam1[0][1],self.eyeposcam2[0][0],self.eyeposcam2[0][1])
                         self.calculatedright = eyePos3D.runEyePos3D(self.eyeposcam1[1][0],self.eyeposcam1[1][1],self.eyeposcam2[1][0],self.eyeposcam2[1][1])                
                         self.calculatedsun = sunPos3D_new.runSunPos3D(self.sun_center[0],self.sun_center[1])
