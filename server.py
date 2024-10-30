@@ -135,10 +135,11 @@ class server:
                         self.eyeposcam2[0][i] /= (self.max_eyecnt - no_cnt) 
                     for i in range(2):
                         self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt) 
-                if self.eyeposcam1[0][1]==0 or self.eyeposcam2[0][1]==0:
-                    self.num=0
-                else:
-                    self.num+=1
+                #if self.eyeposcam1[0][1]==0 or self.eyeposcam2[0][1]==0:
+                    #self.num=0
+                #else:
+                    #self.num+=1
+                self.num += 1
                 print("===debug4===")
             #태양위치추출
             elif self.num==2:
