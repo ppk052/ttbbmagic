@@ -34,11 +34,11 @@ def sun_tracking_from_camera():
             center_y = int(moments['m01'] / moments['m00'])
             sunpos = [center_x, center_y]
         
-        # 태양의 위치에 원 그리기
-        cv2.circle(frame, sunpos, 20, (0, 0, 255), 2)
-        
-        # 태양의 위치를 실시간으로 표시
-        cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            # 태양의 위치에 원 그리기
+            cv2.circle(frame, sunpos, 20, (0, 0, 255), 2)
+            
+            # 태양의 위치를 실시간으로 표시
+            cv2.putText(frame, f"Sun Position: {sunpos}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
         # 결과 영상 출력
         cv2.imshow("Sun Tracking (Press 'q' to quit)", frame)

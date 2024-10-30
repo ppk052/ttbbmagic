@@ -140,7 +140,6 @@ class server:
                     for i in range(2):
                         self.eyeposcam2[1][i] /= (self.max_eyecnt - no_cnt + 1) 
                 self.num+=1
-                picam0.close()
                 print("===debug4===")
             #태양위치추출
             elif self.num==2 or self.num==3:

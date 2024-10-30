@@ -1,6 +1,6 @@
 import math
 
-F = 3.4 #초점거리
+F = 2.5 #초점거리
 def changeX(k): 
     return k * F * math.tan(27*math.pi/180) / 320
 def changeY(k):
@@ -9,7 +9,7 @@ def changeY(k):
 def runSunPos3D(cam0x,cam0y,cam1x,cam1y):
     A, B, C, D = changeX(cam0x),changeY(cam0y),changeX(cam1x),changeY(cam1y) 
 
-    M = 100
+    M = 150
 
     ac = A-C
     if ac == 0:
