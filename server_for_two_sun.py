@@ -151,7 +151,7 @@ class server:
                         # Picamera2 초기화
                         picam0=Picamera2(self.num)
                         picam0.start()
-                    if self.firstsend and not self.update:
+                    if self.find and self.firstsend and not self.update:
                         picam0=Picamera2(self.num)
                         picam0.start()   
                     image = picam0.capture_array()  
