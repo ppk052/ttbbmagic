@@ -30,7 +30,7 @@ class server:
         self.message = message  
         self.status = False
         self.max_eyecnt = 5
-        self.max_suncnt = 50
+        self.max_suncnt = 10
         self.max_not_recg = 5
         #선트래킹을 위한 변수
         self.sun_center = [0,0]
@@ -144,43 +144,42 @@ class server:
             #태양위치추출
             elif self.num==2 or self.num==3:
                 cnt = 0
+                cnt2 = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
-                    if self.find:
-                        if self.update:
-                            # Picamera2 초기화
-                            picam0=Picamera2(self.num)
-                            picam0.start()
-                        if self.firstsend and not self.update:
-                            picam0=Picamera2(self.num)
-                            picam0.start()   
-                    image = picam0.capture_array()  
-                    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
-                    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                    blurred_image = cv2.GaussianBlur(gray, (31, 31), 0)
-                    _, threshold_img = cv2.threshold(blurred_image, 252, 255, cv2.THRESH_BINARY)
-                    moments = cv2.moments(threshold_img, True)
-                    if moments['m00'] != 0:  # Prevent division by zero
-                        center_x = int(moments['m10'] / moments['m00'])
-                        center_y = int(moments['m01'] / moments['m00'])
-                        center = (center_x, center_y)
-                        self.set_sun_center(center)
-                        print(f"Sun Detected at: {self.sun_center[0]}, {self.sun_center[1]}")
-                        self.mod_sun_center(image)
-                        self.find = True
-                        if self.num==2:
-                            self.sunpos1=self.sun_center
+                    try:
+                        picam0.close()
+                    except:
+                        pass
+                    picam0=Picamera2(self.num)
+                    picam0.start()
+                    while cnt2 < 10:
+                        image = picam0.capture_array()  
+                        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
+                        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                        blurred_image = cv2.GaussianBlur(gray, (31, 31), 0)
+                        _, threshold_img = cv2.threshold(blurred_image, 252, 255, cv2.THRESH_BINARY)
+                        moments = cv2.moments(threshold_img, True)
+                        if moments['m00'] != 0:  # Prevent division by zero
+                            center_x = int(moments['m10'] / moments['m00'])
+                            center_y = int(moments['m01'] / moments['m00'])
+                            center = (center_x, center_y)
+                            self.set_sun_center(center)
+                            print(f"Sun Detected at: {self.sun_center[0]}, {self.sun_center[1]}")
+                            self.mod_sun_center(image)
+                            if self.num==2:
+                                self.sunpos1=self.sun_center
+                            else:
+                                self.sunpos2=self.sun_center
+                                self.update = True
                         else:
-                            self.sunpos2=self.sun_center
-                    else:
-                        print("No sun detected.")
-                        """if not_recg == self.max_not_recg:
-                            await websocket.send("(0,0,0)")
-                            self.find = False
-                            continue
-                        not_recg+=1"""
-                        self.find=False
-                        continue
+                            print("No sun detected.")
+                            """if not_recg == self.max_not_recg:
+                                await websocket.send("(0,0,0)")
+                                self.find = False
+                                continue
+                            not_recg+=1"""
+                        cnt2+=1
                     if self.update:
                         print("camera1: ",self.eyeposcam1)
                         print("camera2: ",self.eyeposcam2)
@@ -194,18 +193,14 @@ class server:
                             await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
                             print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                         self.update = False
-                        if self.firstsend:
-                            self.firstsend = False
+                    #end of while
+                    if self.num == 2:
+                        self.num = 3
                     else:
-                        if self.num==2:
-                            self.num=3
-                        else:
-                            self.num=2
-                        self.update = True
-                        picam0.close()
+                        self.num = 2
                     cnt+=1
+                #end of while
                 self.num=0
-                self.firstsend = True
                 self.update = False
                 try:
                     picam0.close()
