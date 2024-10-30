@@ -28,7 +28,7 @@ class server:
         self.calculateddp=[0,0]
         self.message = message  
         self.status = False
-        self.max_eyecnt = 5
+        self.max_eyecnt = 10
         self.max_suncnt = 50  
         self.max_not_recg = 5
         #선트래킹을 위한 변수
