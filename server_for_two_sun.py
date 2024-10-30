@@ -36,6 +36,7 @@ class server:
         self.sun_center = [0,0]
         self.camchange =0
         self.find = True
+        self.firstsend = True
         start_server = websockets.serve(self.hello, "localhost", 8000)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever() 
@@ -146,10 +147,13 @@ class server:
                 cnt = 0
                 not_recg = 0
                 while cnt <=self.max_suncnt:
-                    if self.find and not self.update:
+                    if self.find and self.update:
                         # Picamera2 초기화
                         picam0=Picamera2(self.num)
-                        picam0.start()    
+                        picam0.start()
+                    if self.firstsend and not self.update:
+                        picam0=Picamera2(self.num)
+                        picam0.start()   
                     image = picam0.capture_array()  
                     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # BGR로 변환 (Picamera는 기본적으로 RGB를 반환)
                     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -190,6 +194,8 @@ class server:
                             await websocket.send(f"({self.message[0]},{self.message[2]},{self.message[1]})")
                             print(f"({self.message[0]},{self.message[2]},{self.message[1]})sended")
                         self.update = False
+                        if self.firstsend:
+                            self.firstsend = False
                     else:
                         if self.num==2:
                             self.num=3

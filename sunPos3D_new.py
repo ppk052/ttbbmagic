@@ -13,13 +13,13 @@ def runSunPos3D(cam0x,cam0y,cam1x,cam1y):
 
     ac = A-C
     if ac == 0:
-        x = -F*M / A
+        x = F*M / A
     else:
-        x = -2*F*M / (A-C) 
-    y = -((A*x / F) - M)
+        x = 2*F*M / (A-C) 
+    y = (A*x / F) + M
     z = (B+D) * x / (2*F)
 
-    print("x:", x)
-    print("y:", y)
-    print("z:", z)
+    print("sx:", x)
+    print("sy:", y)
+    print("sz:", z)
     return([x,y,z])
