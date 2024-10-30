@@ -1,6 +1,6 @@
 import math
 
-F = 3.4 #초점거리
+F = 3.6 #초점거리
 def changeX(k):
     return k * F * math.tan(25.67*math.pi/180) / 320
 def changeY(k):
