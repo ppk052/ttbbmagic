@@ -207,6 +207,7 @@ class server:
                     cnt+=1
                 self.num=0
                 self.firstsend = True
+                self.update = False
                 try:
                     picam0.close()
                 except:

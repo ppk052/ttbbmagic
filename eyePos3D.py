@@ -19,7 +19,13 @@ def runEyePos3D(cam0x,cam0y,cam1x,cam1y):
     y = (A*x / F) - M
     z = (B+D) * x / (2*F)
 
+    print("#############eyePos###############")
+    print("A:", A)
+    print("B:", B)
+    print("C:", C)
+    print("D:", D)
     print("x:", x)
     print("y:", y)
     print("z:", z)
+    print("###################################")
     return([x,y,z])

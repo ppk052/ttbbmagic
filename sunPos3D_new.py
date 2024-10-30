@@ -19,6 +19,7 @@ def runSunPos3D(cam0x,cam0y,cam1x,cam1y):
     y = M-(A*x / F)
     z = -(B+D) * x / (2*F)
 
+    print("#############sunPos###############")
     print("A:", A)
     print("B:", B)
     print("C:", C)
@@ -26,4 +27,5 @@ def runSunPos3D(cam0x,cam0y,cam1x,cam1y):
     print("sx:", x)
     print("sy:", y)
     print("sz:", z)
+    print("###################################")
     return([x,y,z])
